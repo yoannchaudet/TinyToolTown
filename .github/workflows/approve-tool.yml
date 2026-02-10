@@ -61,6 +61,34 @@ jobs:
               return;
             }
 
+            // Verify the GitHub repo is public
+            const repoMatch = github_url.match(/github\.com\/([^/]+)\/([^/]+)/);
+            if (repoMatch) {
+              try {
+                const { data: repoData } = await github.rest.repos.get({
+                  owner: repoMatch[1],
+                  repo: repoMatch[2].replace(/\/$/, ''),
+                });
+                if (repoData.private) {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    body: '⚠️ This repository is private. Tiny Tool Town only lists public, open source tools. Please make the repo public and re-submit.'
+                  });
+                  return;
+                }
+              } catch (err) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: '⚠️ Could not access the GitHub repository. Please make sure the URL is correct and the repo is public.'
+                });
+                return;
+              }
+            }
+
             // Sanitize strings for YAML — strip newlines and control chars
             const sanitize = (s) => s.replace(/[\r\n]+/g, ' ').replace(/[^\x20-\x7E\xA0-\uFFFF]/g, '').trim();
             const yamlStr = (s) => `"${sanitize(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
