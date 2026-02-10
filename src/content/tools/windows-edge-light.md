@@ -4,6 +4,7 @@ tagline: "A customizable glowing edge light effect around your monitor"
 author: "Scott Hanselman"
 author_github: "shanselman"
 github_url: "https://github.com/shanselman/WindowsEdgeLight"
+thumbnail: "/thumbnails/windows-edge-light.png"
 tags: ["windows", "desktop", "visual", "ambient"]
 language: "C#"
 license: "MIT"

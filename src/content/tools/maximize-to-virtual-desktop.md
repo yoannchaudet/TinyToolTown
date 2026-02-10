@@ -4,6 +4,7 @@ tagline: "macOS green-button behavior for Windows 11"
 author: "Scott Hanselman"
 author_github: "shanselman"
 github_url: "https://github.com/shanselman/MaximizeToVirtualDesktop"
+thumbnail: "/thumbnails/maximize-to-virtual-desktop.gif"
 tags: ["windows", "desktop", "productivity", "virtual-desktops"]
 language: "C#"
 license: "MIT"
