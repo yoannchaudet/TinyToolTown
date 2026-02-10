@@ -5,18 +5,8 @@ import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
 import ToolCard from '../components/ToolCard.astro';
 import { getCollection } from 'astro:content';
-import { getReadmeImage } from '../utils/readme-image';
 
 const allTools = await getCollection('tools');
-
-// Fetch README images for all tools in parallel
-const toolImages = new Map<string, string | null>();
-await Promise.all(
-  allTools.map(async (tool) => {
-    const img = tool.data.thumbnail || await getReadmeImage(tool.data.github_url);
-    toolImages.set(tool.id, img);
-  })
-);
 
 const featuredTools = allTools.filter(t => t.data.featured);
 const latestTools = allTools
@@ -47,7 +37,7 @@ const latestTools = allTools
               tags={tool.data.tags}
               language={tool.data.language}
               featured={tool.data.featured}
-              thumbnail={toolImages.get(tool.id) || tool.data.thumbnail}
+              thumbnail={tool.data.thumbnail}
             />
           ))}
         </div>
@@ -71,7 +61,7 @@ const latestTools = allTools
             tags={tool.data.tags}
             language={tool.data.language}
             featured={tool.data.featured}
-            thumbnail={toolImages.get(tool.id) || tool.data.thumbnail}
+            thumbnail={tool.data.thumbnail}
           />
         ))}
       </div>

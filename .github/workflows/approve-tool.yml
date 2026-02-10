@@ -156,11 +156,56 @@ jobs:
             // Write the file
             fs.writeFileSync(filePath, content);
 
+            // Download README thumbnail image
+            const badgeHosts = ['img.shields.io', 'badge.fury.io', 'badgen.net', 'badges.', 'coveralls.io', 'codecov.io', 'travis-ci.', 'ci.appveyor.com', 'github.com/workflows'];
+            const isBadge = (u) => badgeHosts.some(h => u.includes(h)) || u.includes('/badge');
+            const repoClean = github_url.replace(/\/$/, '');
+            const repoOwner = repoClean.split('/')[3];
+            const repoName = repoClean.split('/')[4];
+            let thumbPath = null;
+            for (const branch of ['main', 'master']) {
+              try {
+                const readmeRes = await fetch(`https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/README.md`);
+                if (!readmeRes.ok) continue;
+                const readme = await readmeRes.text();
+                const mdImgs = [...readme.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].find(m => !isBadge(m[1]));
+                const htmlImgs = [...readme.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)].find(m => !isBadge(m[1]));
+                let imgUrl = mdImgs?.[1] || htmlImgs?.[1];
+                if (!imgUrl) continue;
+                if (!imgUrl.startsWith('http')) {
+                  imgUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/${imgUrl.replace(/^\.\//, '')}`;
+                }
+                const ext = require('path').extname(new URL(imgUrl).pathname).split('?')[0] || '.png';
+                const thumbFile = `${slug}${ext}`;
+                const thumbDest = `public/thumbnails/${thumbFile}`;
+                if (!fs.existsSync('public/thumbnails')) fs.mkdirSync('public/thumbnails', { recursive: true });
+                const imgRes = await fetch(imgUrl);
+                if (imgRes.ok) {
+                  const buf = Buffer.from(await imgRes.arrayBuffer());
+                  fs.writeFileSync(thumbDest, buf);
+                  thumbPath = `/thumbnails/${thumbFile}`;
+                  // Update the .md to include thumbnail
+                  const updated = fs.readFileSync(filePath, 'utf-8').replace(
+                    /(github_url:.*\n)/,
+                    `$1thumbnail: "${thumbPath}"\n`
+                  );
+                  fs.writeFileSync(filePath, updated);
+                  console.log(`📸 Downloaded thumbnail: ${thumbFile}`);
+                }
+                break;
+              } catch (e) {
+                console.log(`⚠️ Thumbnail fetch failed: ${e.message}`);
+              }
+            }
+
             // Git commit and push using array args to avoid shell injection
             const { execFileSync } = require('child_process');
             execFileSync('git', ['config', 'user.name', 'Tiny Tool Town Bot']);
             execFileSync('git', ['config', 'user.email', 'bot@tinytooltown.com']);
             execFileSync('git', ['add', filePath]);
+            if (thumbPath) {
+              execFileSync('git', ['add', `public/thumbnails/`]);
+            }
             execFileSync('git', ['commit', '-m', `🏠 Add ${sanitize(name)} (from issue #${issue.number})`]);
             execFileSync('git', ['push']);
 
