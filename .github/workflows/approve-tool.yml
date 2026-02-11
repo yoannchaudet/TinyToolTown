@@ -179,8 +179,8 @@ jobs:
             let imageFromComment = null;
             for (const comment of comments.data) {
               const commentBody = comment.body || '';
-              // Look for uploaded images in markdown format
-              const uploadedImg = commentBody.match(/!\[[^\]]*\]\((https:\/\/[^)]+)\)/);
+              // Look for uploaded images in markdown format (both http and https)
+              const uploadedImg = commentBody.match(/!\[[^\]]*\]\((https?:\/\/[^)]+)\)/);
               if (uploadedImg) {
                 imageFromComment = uploadedImg[1];
                 console.log(`📸 Found uploaded image in comment: ${imageFromComment}`);
@@ -215,6 +215,7 @@ jobs:
             }
             
             // If no image from comments, check README
+            let noSuitableImageFound = false;
             if (!thumbPath) {
               for (const branch of ['main', 'master']) {
                 try {
@@ -232,6 +233,7 @@ jobs:
                   
                   if (topImages.length === 0) {
                     console.log(`⚠️ No images found in README`);
+                    noSuitableImageFound = true;
                     break;
                   }
                   
@@ -260,13 +262,7 @@ jobs:
                   
                   if (imageCandidates.length === 0) {
                     console.log(`⚠️ No images met minimum size requirement (${MIN_IMAGE_SIZE / 1024} KB)`);
-                    // Post a comment asking for a better image
-                    await github.rest.issues.createComment({
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      issue_number: issue.number,
-                      body: `📸 **Image needed!**\n\nI couldn't find a suitable thumbnail image in your README. The images I found were either too small (less than ${MIN_IMAGE_SIZE / 1024} KB) or were badges/icons.\n\nPlease upload a screenshot or image that showcases your tool by:\n1. Dragging and dropping an image into a comment below\n2. Using markdown syntax: \`![Description](image-url)\`\n\nOnce you've uploaded an image, I'll automatically use it when the tool is approved. Thanks! ✨`
-                    });
+                    noSuitableImageFound = true;
                     break;
                   }
                   
@@ -292,6 +288,16 @@ jobs:
                 } catch (e) {
                   console.log(`⚠️ Thumbnail fetch failed: ${e.message}`);
                 }
+              }
+              
+              // Post a comment if no suitable image was found
+              if (noSuitableImageFound) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `📸 **Image needed!**\n\nI couldn't find a suitable thumbnail image in your README. The images I found were either too small (less than ${MIN_IMAGE_SIZE / 1024} KB) or were badges/icons.\n\nPlease upload a screenshot or image that showcases your tool by:\n1. Dragging and dropping an image into a comment below\n2. Using markdown syntax: \`![Description](image-url)\`\n\nOnce you've uploaded an image, I'll automatically use it when the tool is approved. Thanks! ✨`
+                });
               }
             }
 

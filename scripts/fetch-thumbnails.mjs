@@ -67,7 +67,7 @@ async function findBestReadmeImage(owner, repo) {
 }
 
 async function downloadImage(url, destPath, buffer) {
-  if (buffer) {
+  if (buffer && Buffer.isBuffer(buffer)) {
     // Use pre-downloaded buffer
     fs.writeFileSync(destPath, buffer);
     return buffer.length;
