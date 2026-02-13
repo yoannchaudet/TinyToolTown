@@ -1,0 +1,18 @@
+---
+name: "RackPeek"
+tagline: "CLI tool to document your never ending midlife crisis (home lab)"
+author: "Tim Jones"
+author_github: "Timmoth"
+github_url: "https://github.com/Timmoth/RackPeek"
+thumbnail: "/thumbnails/rackpeek.gif"
+website_url: "https://timmoth.github.io/RackPeek/"
+tags: ["cli", "crossplatform", "webui", "homelab", "selfhosted", "infrastructure"]
+language: "C#"
+license: "AGPL-3.0 license"
+date_added: "2026-02-13"
+featured: false
+---
+
+RackPeek is a lightweight, opinionated dotnet CLI tool & Blazor WebApp for documenting and managing home lab and small-scale IT infrastructure.
+
+It helps you track hardware, services, networks, and their relationships in a clear, scriptable, and reusable way without enterprise bloat or proprietary lock-in.
