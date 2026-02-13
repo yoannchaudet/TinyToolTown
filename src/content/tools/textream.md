@@ -4,7 +4,7 @@ tagline: "Textream is a free macOS teleprompter app for streamers, interviewers,
 author: "Fatih Kadir Akın"
 author_github: "f"
 github_url: "https://github.com/f/textream"
-thumbnail: "/thumbnails/textream.png"
+thumbnail: "/thumbnails/textream.gif"
 website_url: "https://textream.fka.dev/"
 tags: ["macos", "presentation", "teleprompter", "streaming"]
 language: "Swift"

@@ -4,6 +4,7 @@ tagline: "Visualize the sun's journey across the sky"
 author: "Ivan Wen"
 author_github: "windskywen"
 github_url: "https://github.com/windskywen/solar-path"
+thumbnail: "/thumbnails/3d-solar-path.jpg"
 website_url: "https://www.solarpathtracker.com/"
 tags: ["tool"]
 language: "Typescript"

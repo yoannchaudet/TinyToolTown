@@ -4,6 +4,7 @@ tagline: "Private, client-side PDF diff web app + CLI via npx (pdf-diff)"
 author: "James Montemagno"
 author_github: "jamesmontemagno"
 github_url: "https://github.com/jamesmontemagno/pdf-diff"
+thumbnail: "/thumbnails/pdf-diff.png"
 website_url: "https://www.pdf-diff.com"
 tags: ["pdf", "diff", "compare", "privacy", "client-side", "web", "cli", "npx", "typescript", "react"]
 language: "TypeScript"
