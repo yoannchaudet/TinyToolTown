@@ -71,7 +71,8 @@ const moreTags = [...tagCounts.entries()]
         <div class="tool-item"
           data-name={tool.data.name.toLowerCase()}
           data-tagline={tool.data.tagline.toLowerCase()}
-          data-tags={tool.data.tags.join(',')}
+          data-tags={tool.data.tags.map(t => t.toLowerCase()).join(',')}
+          data-author={tool.data.author.toLowerCase()}
         >
           <ToolCard
             name={tool.data.name}
@@ -132,8 +133,9 @@ const moreTags = [...tagCounts.entries()]
       const name = el.dataset.name || '';
       const tagline = el.dataset.tagline || '';
       const tags = (el.dataset.tags || '').toLowerCase();
+      const author = el.dataset.author || '';
 
-      const matchesSearch = !query || name.includes(query) || tagline.includes(query);
+      const matchesSearch = !query || name.includes(query) || tagline.includes(query) || tags.includes(query) || author.includes(query);
       const matchesTag = activeTag === 'all' || tags.split(',').includes(activeTag);
 
       if (matchesSearch && matchesTag) {
