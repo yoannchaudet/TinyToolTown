@@ -95,7 +95,7 @@ const HUE_OFFSET_SECONDARY = 53;
           </aside>
 
           {/* Position counter */}
-          <div class="panel-counter">{index + 1} / {tools.length}</div>
+          <div class="panel-counter">🔀 {index + 1} / {tools.length}</div>
         </section>
       );
     })}
@@ -162,6 +162,9 @@ const HUE_OFFSET_SECONDARY = 53;
         panel.classList.add('panel-below');
       }
     });
+    // Update all counters to reflect current position
+    const counter = panels[viewerState.index]?.querySelector('.panel-counter');
+    if (counter) counter.textContent = `🔀 ${viewerState.index + 1} / ${panels.length}`;
   }
 
   function handleSwipeStart(e: TouchEvent) {
@@ -229,18 +232,14 @@ const HUE_OFFSET_SECONDARY = 53;
 
   function advancePanel() {
     const panels = document.querySelectorAll('.tool-panel');
-    if (viewerState.index < panels.length - 1) {
-      viewerState.index++;
-      updatePanelPositions();
-    }
+    viewerState.index = (viewerState.index + 1) % panels.length;
+    updatePanelPositions();
   }
 
   function retreatPanel() {
     const panels = document.querySelectorAll('.tool-panel');
-    if (viewerState.index > 0) {
-      viewerState.index--;
-      updatePanelPositions();
-    }
+    viewerState.index = (viewerState.index - 1 + panels.length) % panels.length;
+    updatePanelPositions();
   }
 
   function hideViewer() {
@@ -318,10 +317,24 @@ const HUE_OFFSET_SECONDARY = 53;
       viewerState.index = 0;
       document.body.style.overflow = 'hidden';
       
+      // Shuffle panels randomly each time
+      shufflePanels();
       updatePanelPositions();
       loadFavoriteStates();
     }
   };
+
+  function shufflePanels() {
+    const track = document.querySelector('.viewer-track');
+    if (!track) return;
+    const panels = Array.from(track.querySelectorAll('.tool-panel'));
+    // Fisher-Yates shuffle
+    for (let i = panels.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      track.appendChild(panels[j]);
+      panels[j] = panels[i];
+    }
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupViewer);
