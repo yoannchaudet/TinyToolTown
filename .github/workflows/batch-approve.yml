@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: approve-tool
+  group: batch-approve-tool
   cancel-in-progress: false
 
 jobs:
