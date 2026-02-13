@@ -11,7 +11,7 @@ const HUE_OFFSET_PRIMARY = 37;
 const HUE_OFFSET_SECONDARY = 53;
 ---
 
-<div id="shorts-viewer" class="viewer-hidden">
+<div id="shorts-viewer" class="viewer-hidden" role="dialog" aria-label="Tool shorts viewer" aria-modal="true">
   <button id="exit-shorts" class="exit-control" aria-label="Exit">✕</button>
   
   <div class="viewer-track">
@@ -219,6 +219,30 @@ const HUE_OFFSET_SECONDARY = 53;
   function handleKeys(e: KeyboardEvent) {
     if (!viewerState.active) return;
     
+    // Focus trap — WCAG 2.4.3
+    if (e.key === 'Tab') {
+      const viewer = document.getElementById('shorts-viewer');
+      if (!viewer) return;
+      const focusable = viewer.querySelectorAll<HTMLElement>(
+        'button, a[href], input, [tabindex]:not([tabindex="-1"])'
+      );
+      const visiblePanel = viewer.querySelector('.panel-visible');
+      const panelFocusable = visiblePanel
+        ? Array.from(focusable).filter(el => visiblePanel.contains(el) || el.id === 'exit-shorts')
+        : Array.from(focusable);
+      if (panelFocusable.length === 0) return;
+      const first = panelFocusable[0];
+      const last = panelFocusable[panelFocusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+      return;
+    }
+
     const keyActions: Record<string, () => void> = {
       'ArrowDown': () => { e.preventDefault(); advancePanel(); },
       'ArrowRight': () => { e.preventDefault(); advancePanel(); },
@@ -248,6 +272,8 @@ const HUE_OFFSET_SECONDARY = 53;
       viewer.classList.add('viewer-hidden');
       viewerState.active = false;
       document.body.style.overflow = '';
+      // Restore focus to element that opened the viewer
+      previousFocus?.focus();
     }
   }
 
@@ -308,10 +334,14 @@ const HUE_OFFSET_SECONDARY = 53;
     });
   }
 
+  // Focus management for modal — WCAG 2.4.3
+  let previousFocus: HTMLElement | null = null;
+
   // Global function to open viewer
   (window as any).launchShortsViewer = function() {
     const viewer = document.getElementById('shorts-viewer');
     if (viewer) {
+      previousFocus = document.activeElement as HTMLElement;
       viewer.classList.remove('viewer-hidden');
       viewerState.active = true;
       viewerState.index = 0;
@@ -321,6 +351,10 @@ const HUE_OFFSET_SECONDARY = 53;
       shufflePanels();
       updatePanelPositions();
       loadFavoriteStates();
+
+      // Move focus into viewer
+      const exitBtn = document.getElementById('exit-shorts');
+      exitBtn?.focus();
     }
   };
 
