@@ -1,24 +1,62 @@
 using GitHub.Copilot.SDK;
 using TinyToolSummarizer;
 
+// --- Parse CLI flags ---
+// Usage: dotnet run [options] [path]
+// Options:
+//   --headless         Run without interactive prompts (processes new tools only)
+//   --all              Headless: re-run on ALL tools (overwrite existing)
+//   --tool <name>      Headless: process a specific tool by filename (without .md)
+//   --model <name>     Model to use (default: gpt-5-mini)
+var flagArgs = args.Where(a => a.StartsWith("--") || a.StartsWith("-")).ToList();
+var positionalArgs = args.Where(a => !a.StartsWith("-")).ToList();
+
+var headless = flagArgs.Contains("--headless");
+var flagAll = flagArgs.Contains("--all");
+var flagToolIndex = flagArgs.IndexOf("--tool");
+string? flagToolName = null;
+if (flagToolIndex >= 0 && flagToolIndex + 1 < flagArgs.Count)
+    flagToolName = flagArgs[flagToolIndex + 1];
+var flagModelIndex = flagArgs.IndexOf("--model");
+string? flagModelName = null;
+if (flagModelIndex >= 0 && flagModelIndex + 1 < flagArgs.Count)
+    flagModelName = flagArgs[flagModelIndex + 1];
+// Check args array directly for --tool and --model values
+if (flagToolName == null || flagModelName == null)
+{
+    for (int i = 0; i < args.Length - 1; i++)
+    {
+        if (args[i] == "--tool" && flagToolName == null)
+            flagToolName = args[i + 1];
+        if (args[i] == "--model" && flagModelName == null)
+            flagModelName = args[i + 1];
+    }
+}
+
 Console.ForegroundColor = ConsoleColor.Cyan;
 Console.WriteLine("╔══════════════════════════════════════════════════════════════╗");
 Console.WriteLine("║       Tiny Tool Town — AI Summary Generator 🏘️✨          ║");
 Console.WriteLine("║       Powered by GitHub Copilot SDK                        ║");
 Console.WriteLine("╚══════════════════════════════════════════════════════════════╝");
 Console.ResetColor();
+if (headless)
+{
+    Console.ForegroundColor = ConsoleColor.DarkGray;
+    Console.WriteLine("  [headless mode]");
+    Console.ResetColor();
+}
 Console.WriteLine();
 
 // Resolve the content/tools directory
-var contentDir = args.Length > 0
-    ? args[0]
+var contentDir = positionalArgs.Count > 0
+    ? positionalArgs[0]
     : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "src", "content", "tools"));
 
 if (!Directory.Exists(contentDir))
 {
     Console.ForegroundColor = ConsoleColor.Red;
     Console.WriteLine($"❌ Tools directory not found: {contentDir}");
-    Console.WriteLine("   Usage: dotnet run [path-to-src/content/tools]");
+    Console.WriteLine("   Usage: dotnet run [--headless] [--all] [--tool <name>] [--model <name>] [path-to-src/content/tools]");
     Console.ResetColor();
     return;
 }
@@ -32,56 +70,87 @@ Console.WriteLine($"📋 Found {allMdFiles.Length} tool files\n");
 var mode = 0; // 0 = NewOnly, 1 = All, 2 = Single
 string? singleTarget = null;
 
-Console.ForegroundColor = ConsoleColor.Yellow;
-Console.WriteLine("🎯 How would you like to run?");
-Console.ResetColor();
-Console.WriteLine("   1. Only tools without AI summaries (default)");
-Console.WriteLine("   2. Re-run on ALL tools (overwrite existing)");
-Console.WriteLine("   3. Pick a specific tool");
-Console.Write("\nEnter choice (1-3) [default: 1]: ");
-
-var modeChoice = Console.ReadLine()?.Trim();
-switch (modeChoice)
+if (headless)
 {
-    case "2":
-        mode = 1; // All
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("🔄 Will re-generate ALL summaries\n");
-        Console.ResetColor();
-        break;
-    case "3":
+    // Headless mode — determine mode from flags
+    if (flagToolName != null)
+    {
         mode = 2; // Single
-        // List tools for selection
-        var toolNames = allMdFiles
-            .Select((f, i) => (Index: i + 1, Name: Path.GetFileNameWithoutExtension(f)))
-            .ToList();
-
-        Console.WriteLine();
-        foreach (var t in toolNames)
-            Console.WriteLine($"   {t.Index,3}. {t.Name}");
-
-        Console.Write($"\nEnter tool number (1-{toolNames.Count}): ");
-        var toolChoice = Console.ReadLine()?.Trim();
-        if (int.TryParse(toolChoice, out var toolIndex) && toolIndex >= 1 && toolIndex <= toolNames.Count)
-        {
-            singleTarget = allMdFiles[toolIndex - 1];
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"🎯 Will process: {Path.GetFileName(singleTarget)}\n");
-            Console.ResetColor();
-        }
-        else
+        singleTarget = allMdFiles.FirstOrDefault(f =>
+            Path.GetFileNameWithoutExtension(f).Equals(flagToolName, StringComparison.OrdinalIgnoreCase));
+        if (singleTarget == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("❌ Invalid selection. Exiting.");
+            Console.WriteLine($"❌ Tool not found: {flagToolName}");
             Console.ResetColor();
             return;
         }
-        break;
-    default:
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("⏭️  Will skip tools that already have AI summaries\n");
-        Console.ResetColor();
-        break;
+        Console.WriteLine($"🎯 Headless: processing {Path.GetFileName(singleTarget)}\n");
+    }
+    else if (flagAll)
+    {
+        mode = 1; // All
+        Console.WriteLine("🔄 Headless: re-generating ALL summaries\n");
+    }
+    else
+    {
+        mode = 0; // NewOnly
+        Console.WriteLine("⏭️  Headless: processing tools without AI summaries\n");
+    }
+}
+else
+{
+    // Interactive mode
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine("🎯 How would you like to run?");
+    Console.ResetColor();
+    Console.WriteLine("   1. Only tools without AI summaries (default)");
+    Console.WriteLine("   2. Re-run on ALL tools (overwrite existing)");
+    Console.WriteLine("   3. Pick a specific tool");
+    Console.Write("\nEnter choice (1-3) [default: 1]: ");
+
+    var modeChoice = Console.ReadLine()?.Trim();
+    switch (modeChoice)
+    {
+        case "2":
+            mode = 1; // All
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("🔄 Will re-generate ALL summaries\n");
+            Console.ResetColor();
+            break;
+        case "3":
+            mode = 2; // Single
+            var toolNames = allMdFiles
+                .Select((f, i) => (Index: i + 1, Name: Path.GetFileNameWithoutExtension(f)))
+                .ToList();
+
+            Console.WriteLine();
+            foreach (var t in toolNames)
+                Console.WriteLine($"   {t.Index,3}. {t.Name}");
+
+            Console.Write($"\nEnter tool number (1-{toolNames.Count}): ");
+            var toolChoice = Console.ReadLine()?.Trim();
+            if (int.TryParse(toolChoice, out var toolIndex) && toolIndex >= 1 && toolIndex <= toolNames.Count)
+            {
+                singleTarget = allMdFiles[toolIndex - 1];
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine($"🎯 Will process: {Path.GetFileName(singleTarget)}\n");
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("❌ Invalid selection. Exiting.");
+                Console.ResetColor();
+                return;
+            }
+            break;
+        default:
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("⏭️  Will skip tools that already have AI summaries\n");
+            Console.ResetColor();
+            break;
+    }
 }
 
 var mdFiles = mode == 2 && singleTarget != null
@@ -101,13 +170,68 @@ try
     Console.WriteLine("✅ Copilot client started\n");
     Console.ResetColor();
 
+    // --- Model selection ---
+    string selectedModel;
+    if (flagModelName != null)
+    {
+        selectedModel = flagModelName;
+        Console.WriteLine($"🤖 Using model: {selectedModel} (from --model flag)\n");
+    }
+    else if (headless)
+    {
+        selectedModel = "gpt-5-mini";
+        Console.WriteLine($"🤖 Using default model: {selectedModel}\n");
+    }
+    else
+    {
+        // Interactive model selection
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine("   Fetching available models...");
+        Console.ResetColor();
+
+        var models = await client.ListModelsAsync();
+        if (models != null && models.Count > 0)
+        {
+            // Find default model index
+            var defaultIndex = models.FindIndex(m =>
+                m.Id.Equals("gpt-5-mini", StringComparison.OrdinalIgnoreCase));
+            if (defaultIndex < 0) defaultIndex = 0;
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("🤖 Select a model:");
+            Console.ResetColor();
+
+            for (int i = 0; i < models.Count; i++)
+            {
+                var model = models[i];
+                var isDefault = i == defaultIndex ? " (default)" : "";
+                Console.WriteLine($"   {i + 1}. {model.Name}{isDefault}");
+            }
+
+            Console.Write($"\nEnter choice (1-{models.Count}) [default: {defaultIndex + 1}]: ");
+            var modelChoice = Console.ReadLine()?.Trim();
+            if (string.IsNullOrEmpty(modelChoice) || !int.TryParse(modelChoice, out var mIdx) || mIdx < 1 || mIdx > models.Count)
+                mIdx = defaultIndex + 1;
+
+            selectedModel = models[mIdx - 1].Id;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"✅ Selected: {models[mIdx - 1].Name}\n");
+            Console.ResetColor();
+        }
+        else
+        {
+            selectedModel = "gpt-5-mini";
+            Console.WriteLine($"⚠️  Could not fetch models, using default: {selectedModel}\n");
+        }
+    }
+
     session = await client.CreateSessionAsync(new SessionConfig
     {
-        Model = "gpt-4o",
+        Model = selectedModel,
         Streaming = true
     });
     Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine($"✅ Session created (ID: {session.SessionId})\n");
+    Console.WriteLine($"✅ Session created with {selectedModel} (ID: {session.SessionId})\n");
     Console.ResetColor();
 
     var httpClient = new HttpClient();

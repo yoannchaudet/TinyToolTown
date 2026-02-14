@@ -70,6 +70,38 @@ npm run build    # Build for production
 npm run preview  # Preview production build
 ```
 
+## AI Summary Generator
+
+A .NET 10 CLI tool in `tools/TinyToolSummarizer/` that uses the [GitHub Copilot SDK](https://github.com/jamesmontemagno/hello-copilot-sdk-dotnet) to auto-generate fun AI summaries and key features for every tool in the directory.
+
+### Prerequisites
+
+- .NET SDK supporting `net10.0`
+- [Copilot CLI](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line) installed and authenticated (or `GH_TOKEN` env var with Copilot Requests permission)
+- `GH_TOKEN` is also recommended for higher GitHub API rate limits when fetching READMEs
+
+### Usage
+
+```bash
+cd tools/TinyToolSummarizer
+dotnet run
+```
+
+**Interactive mode** gives you three options:
+1. Only process tools without AI summaries (default)
+2. Re-run on ALL tools (overwrite existing)
+3. Pick a specific tool
+
+**Headless mode** for CI/automation:
+
+```bash
+dotnet run -- --headless              # New tools only
+dotnet run -- --headless --all        # Re-generate all
+dotnet run -- --headless --tool name  # Specific tool (without .md)
+```
+
+The tool fetches each tool's GitHub README, sends it to Copilot, and writes `ai_summary` and `ai_features` into the markdown frontmatter. The website renders these automatically on each tool's detail page.
+
 ## License
 
 MIT — Made with ✨ vibes ✨ by [Scott Hanselman](https://hanselman.com)
