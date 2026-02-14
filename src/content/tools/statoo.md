@@ -9,6 +9,7 @@ language: "Go"
 license: "MIT"
 date_added: "2026-02-14"
 featured: false
+ai_summary: "A pocket-sized HTTP poke that fires a single GET and returns status timing and optional JSON so quick health checks and CI scripts stay delightfully simple. | FEATURES: 🔥 Simple single GET status reporting with gzip header injection | ⚡ Machine-friendly JSON output with elapsed timing and status fields | 🎯 Custom request headers basic auth timeout and skip certificate options | 🧭 Body text search and response header lookup for targeted checks"
 ---
 
 A super basic http tool that makes only `GET` request to given URL and returns

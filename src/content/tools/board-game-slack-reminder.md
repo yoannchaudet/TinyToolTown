@@ -11,6 +11,8 @@ language: "TypeScript"
 license: "MIT"
 date_added: "2026-02-14"
 featured: false
+ai_summary: "A playful Slack sidekick that nudges your crew about game night, suggests games from your list, and turns picking a winner into a one-click emoji party so deciding what to play is fast and fun."
+ai_features: ["🔥 Sends friendly reminders about board game sessions", "🎲 Randomly suggests games from a configurable list", "👍 Adds emoji reactions for simple voting", "👥 Shows min and max player counts for each game"]
 ---
 
 # Board Game Slack Reminder
