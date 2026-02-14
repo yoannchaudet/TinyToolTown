@@ -5,3 +5,7 @@ dist/
 *.log
 *.png
 !public/**/*.png
+
+# .NET
+tools/**/bin/
+tools/**/obj/
