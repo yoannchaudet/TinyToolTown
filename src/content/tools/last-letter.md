@@ -1,0 +1,17 @@
+---
+name: "Last Letter"
+tagline: "Hangman but kid friendly"
+author: "Ust Oldfield"
+author_github: "ustdoestech"
+github_url: "https://github.com/UstDoesTech/last-letter"
+website_url: "https://last-letter.app/"
+tags: ["fun", "children", "words", "game"]
+language: "JavaScript, HTML"
+license: "MIT"
+date_added: "2026-02-14"
+featured: false
+---
+
+It's a game, like hangman, where players can guess words. I built it for my son as we enjoy playing hangman together and it's a good way to learn spelling and phonics, but we're not always able to play together at the same time. Hangman, as a concept, is pretty gruesome, so there are other ways for the attempts to be registered visually. 
+
+It brings us both joy and I hope it brings other people joy too.
