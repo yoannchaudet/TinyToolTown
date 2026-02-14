@@ -8,6 +8,7 @@ tags: ["cli", "windows", "terminal"]
 language: "PowerShell"
 license: "MIT"
 date_added: "2026-02-09"
+ai_summary: "⚡ Finally stay put when you split! One click and your terminal panes remember where you are instead of rudely dumping you back home."
 ---
 
 When you split a pane in Windows Terminal, the new pane starts in your home directory instead of where you were. This fixes that. One script, one fix, preserves your current directory using Oh My Posh and OSC 99. The kind of fix that should be built in.

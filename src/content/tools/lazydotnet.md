@@ -10,6 +10,7 @@ language: "C#"
 license: "MIT"
 date_added: "2026-02-13"
 featured: false
+ai_summary: "🛠️ Your .NET solution gets the lazygit treatment! Navigate projects, wrangle NuGets, and run tests with vim-style keyboard wizardry right in your terminal."
 ---
 
 **Lazydotnet** is a Terminal User Interface (TUI) designed to streamline the workflow for .NET developers who live in the CLI.

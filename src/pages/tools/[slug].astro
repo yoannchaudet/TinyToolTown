@@ -107,6 +107,18 @@ const langColor = tool.data.language ? langColors[tool.data.language] || '#8b949
         <Content />
       </div>
 
+      <!-- AI Summary -->
+      {tool.data.ai_summary && (
+        <div class="ai-summary">
+          <div class="ai-summary-header">
+            <span class="ai-summary-icon">✨</span>
+            <span class="ai-summary-label">AI Summary</span>
+            <span class="ai-summary-badge">Powered by GitHub Copilot</span>
+          </div>
+          <p class="ai-summary-text">{tool.data.ai_summary}</p>
+        </div>
+      )}
+
       <!-- Back link -->
       <div class="back-link">
         <a href="/tools/">← Back to all tools</a>
@@ -321,6 +333,49 @@ const langColor = tool.data.language ? langColors[tool.data.language] || '#8b949
 
   .back-link a:hover {
     color: var(--color-primary);
+  }
+
+  .ai-summary {
+    background: linear-gradient(135deg, rgba(255, 137, 6, 0.08), rgba(139, 92, 246, 0.08));
+    border: 1px solid rgba(255, 137, 6, 0.25);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .ai-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .ai-summary-icon {
+    font-size: 1.2rem;
+  }
+
+  .ai-summary-label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--color-text);
+  }
+
+  .ai-summary-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    background: rgba(139, 92, 246, 0.2);
+    color: rgb(167, 139, 250);
+    border-radius: 50px;
+    font-weight: 600;
+    margin-left: auto;
+  }
+
+  .ai-summary-text {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+    font-style: italic;
   }
 
   @media (max-width: 640px) {
