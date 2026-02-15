@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getCollection, render } from 'astro:content';
+import { getGitHubRepo } from '../../lib/github';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools');
@@ -14,6 +15,7 @@ export async function getStaticPaths() {
 
 const { tool } = Astro.props;
 const { Content } = await render(tool);
+const repo = getGitHubRepo(tool.data.github_url);
 
 const langColors: Record<string, string> = {
   'C#': '#178600',
@@ -72,6 +74,11 @@ const langColor = tool.data.language ? langColors[tool.data.language] || '#8b949
               )}
               {tool.data.license && (
                 <span class="badge license-badge">📄 {tool.data.license}</span>
+              )}
+              {repo && (
+                <a href={`https://github.com/${repo}`} target="_blank" rel="noopener" class="badge star-badge" id="star-badge" data-repo={repo}>
+                  ⭐ <span id="star-count">…</span>
+                </a>
               )}
             </div>
           </div>
@@ -236,6 +243,20 @@ const langColor = tool.data.language ? langColors[tool.data.language] || '#8b949
     width: 10px;
     height: 10px;
     border-radius: 50%;
+  }
+
+  .star-badge {
+    background: #007ec6;
+    border-color: #007ec6;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .star-badge:hover {
+    opacity: 0.85;
+    color: #fff;
   }
 
   .tool-tags {
@@ -419,3 +440,20 @@ const langColor = tool.data.language ? langColors[tool.data.language] || '#8b949
     .tool-content { padding: 1.5rem; }
   }
 </style>
+
+<script>
+  const badge = document.getElementById('star-badge');
+  if (badge) {
+    const repo = badge.dataset.repo;
+    fetch(`https://api.github.com/repos/${repo}`)
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        const count = data.stargazers_count;
+        const label = count >= 1000
+          ? (count / 1000).toFixed(count >= 10000 ? 0 : 1) + 'k'
+          : count.toString();
+        document.getElementById('star-count')!.textContent = label;
+      })
+      .catch(() => { badge.style.display = 'none'; });
+  }
+</script>

@@ -1,5 +1,7 @@
 ---
 // Shorts-style viewer for TinyToolTown
+import { getGitHubRepo } from '../lib/github';
+
 interface Props {
   tools: any[];
 }
@@ -85,6 +87,15 @@ const HUE_OFFSET_SECONDARY = 53;
               </svg>
               <span class="action-text">Share</span>
             </button>
+
+            {getGitHubRepo(tool.data.github_url) && (
+              <a href={tool.data.github_url} target="_blank" rel="noopener noreferrer" class="panel-action star-action" data-repo={getGitHubRepo(tool.data.github_url)} aria-label="Star on GitHub">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                <span class="action-text star-count-text">Star</span>
+              </a>
+            )}
 
             <a href={tool.data.github_url} target="_blank" rel="noopener noreferrer" class="panel-action repository-action" aria-label="GitHub Repository">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
@@ -375,6 +386,40 @@ const HUE_OFFSET_SECONDARY = 53;
   } else {
     setupViewer();
   }
+
+  // Fetch star counts for shorts panels
+  const starCache = new Map<string, string>();
+  function fetchStarCounts() {
+    document.querySelectorAll('.star-action[data-repo]').forEach(async (el) => {
+      const repo = (el as HTMLElement).dataset.repo!;
+      const textEl = el.querySelector('.star-count-text');
+      if (!textEl || starCache.has(repo)) {
+        if (starCache.has(repo)) textEl!.textContent = starCache.get(repo)!;
+        return;
+      }
+      try {
+        const r = await fetch(`https://api.github.com/repos/${repo}`);
+        if (!r.ok) return;
+        const data = await r.json();
+        const count = data.stargazers_count;
+        const label = '⭐ ' + (count >= 1000
+          ? (count / 1000).toFixed(count >= 10000 ? 0 : 1) + 'k'
+          : count.toString());
+        starCache.set(repo, label);
+        textEl.textContent = label;
+      } catch {}
+    });
+  }
+  // Fetch on viewer open
+  const observer = new MutationObserver(() => {
+    const viewer = document.getElementById('shorts-viewer');
+    if (viewer && !viewer.classList.contains('viewer-hidden')) {
+      fetchStarCounts();
+      observer.disconnect();
+    }
+  });
+  const viewerEl = document.getElementById('shorts-viewer');
+  if (viewerEl) observer.observe(viewerEl, { attributes: true, attributeFilter: ['class'] });
 </script>
 
 <style>
@@ -622,6 +667,20 @@ const HUE_OFFSET_SECONDARY = 53;
   .favorite-action.favorited svg {
     fill: #ff2d55;
     stroke: #ff2d55;
+  }
+
+  .star-action {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .star-action svg {
+    fill: none;
+  }
+
+  .star-action:hover svg {
+    fill: #ffd700;
+    stroke: #ffd700;
   }
 
   @keyframes heartbeat {

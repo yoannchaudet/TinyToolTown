@@ -1,4 +1,6 @@
 ---
+import { getGitHubRepo } from '../lib/github';
+
 interface Props {
   name: string;
   slug: string;
@@ -9,9 +11,11 @@ interface Props {
   language?: string;
   featured?: boolean;
   thumbnail?: string;
+  github_url?: string;
 }
 
-const { name, slug, tagline, author, author_github, tags, language, featured, thumbnail } = Astro.props;
+const { name, slug, tagline, author, author_github, tags, language, featured, thumbnail, github_url } = Astro.props;
+const repo = getGitHubRepo(github_url);
 
 const langColors: Record<string, string> = {
   'C#': '#178600',
@@ -60,6 +64,15 @@ const langColor = language ? langColors[language] || '#8b949e' : null;
         loading="lazy"
       />
       <span class="author-name" data-author-search={author.toLowerCase()}>{author}</span>
+      {repo && (
+        <img
+          src={`https://img.shields.io/github/stars/${repo}?style=flat&label=%E2%AD%90`}
+          alt={`GitHub stars for ${name}`}
+          class="card-stars"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        />
+      )}
     </div>
   </div>
 </a>
@@ -219,5 +232,11 @@ const langColor = language ? langColors[language] || '#8b949e' : null;
   .author-name:hover {
     text-decoration: underline;
     color: var(--color-primary);
+  }
+
+  .card-stars {
+    height: 18px;
+    flex-shrink: 0;
+    margin-left: auto;
   }
 </style>
