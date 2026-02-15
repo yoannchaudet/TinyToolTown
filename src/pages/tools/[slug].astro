@@ -33,6 +33,7 @@ const langColor = tool.data.language ? langColors[tool.data.language] || '#8b949
 <BaseLayout
   title={`${tool.data.name} — Tiny Tool Town 🏘️`}
   description={tool.data.tagline}
+  {...(tool.data.theme ? { theme: tool.data.theme } : {})}
 >
   <Header />
 

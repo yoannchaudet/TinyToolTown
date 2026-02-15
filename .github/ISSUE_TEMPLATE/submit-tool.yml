@@ -86,6 +86,26 @@ body:
       label: License
       placeholder: "e.g., MIT, Apache-2.0, GPL-3.0"
 
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Page Theme (optional)
+      description: Choose a custom color theme for your tool's page. Preview them at tinytooltown.com!
+      options:
+        - "None (site default)"
+        - terminal
+        - neon
+        - minimal
+        - pastel
+        - matrix
+        - sunset
+        - ocean
+        - forest
+        - candy
+        - synthwave
+        - newspaper
+        - retro
+
   - type: checkboxes
     id: confirm
     attributes:

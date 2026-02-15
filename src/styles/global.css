@@ -180,6 +180,232 @@
   100% { transform: translateX(-100%); }
 }
 
+/* === Per-tool themes (author picks via frontmatter) === */
+
+/* Terminal: green-on-black hacker vibes */
+[data-theme="terminal"] {
+  --color-bg: #0a0a0a;
+  --color-bg-card: #111111;
+  --color-bg-hover: #1a1a1a;
+  --color-text: #00ff41;
+  --color-text-muted: #00aa2a;
+  --color-primary: #00ff41;
+  --color-secondary: #39ff14;
+  --color-tertiary: #00ff80;
+  --color-accent: #00ff41;
+  --color-green: #00ff41;
+  --color-tag-bg: rgba(0, 255, 65, 0.1);
+  --color-tag-text: #00ff41;
+  --color-border: rgba(0, 255, 65, 0.15);
+  --color-header-bg: rgba(10, 10, 10, 0.95);
+  --font-body: 'Courier New', 'Consolas', monospace;
+  --font-display: 'Courier New', 'Consolas', monospace;
+}
+
+/* Neon: electric pink/cyan club poster */
+[data-theme="neon"] {
+  --color-bg: #0d0221;
+  --color-bg-card: #150535;
+  --color-bg-hover: #1a0a40;
+  --color-text: #f0e6ff;
+  --color-text-muted: #b088d4;
+  --color-primary: #ff2a6d;
+  --color-secondary: #05d9e8;
+  --color-tertiary: #d300c5;
+  --color-accent: #05d9e8;
+  --color-green: #39ff14;
+  --color-tag-bg: rgba(5, 217, 232, 0.15);
+  --color-tag-text: #05d9e8;
+  --color-border: rgba(255, 42, 109, 0.2);
+  --color-header-bg: rgba(13, 2, 33, 0.9);
+}
+
+/* Minimal: clean grayscale, no frills */
+[data-theme="minimal"] {
+  --color-bg: #fafafa;
+  --color-bg-card: #ffffff;
+  --color-bg-hover: #f0f0f0;
+  --color-text: #222222;
+  --color-text-muted: #777777;
+  --color-primary: #333333;
+  --color-secondary: #555555;
+  --color-tertiary: #444444;
+  --color-accent: #333333;
+  --color-green: #333333;
+  --color-tag-bg: rgba(0, 0, 0, 0.06);
+  --color-tag-text: #444444;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-header-bg: rgba(250, 250, 250, 0.95);
+}
+
+/* Pastel: soft dreamy colors */
+[data-theme="pastel"] {
+  --color-bg: #fef6f9;
+  --color-bg-card: #ffffff;
+  --color-bg-hover: #fdf0f5;
+  --color-text: #4a3f5c;
+  --color-text-muted: #8e82a6;
+  --color-primary: #e8829a;
+  --color-secondary: #82b4e8;
+  --color-tertiary: #c882e8;
+  --color-accent: #82cae8;
+  --color-green: #82e8a6;
+  --color-tag-bg: rgba(200, 130, 232, 0.1);
+  --color-tag-text: #a872cc;
+  --color-border: rgba(200, 130, 232, 0.15);
+  --color-header-bg: rgba(254, 246, 249, 0.95);
+}
+
+/* Matrix: digital rain */
+[data-theme="matrix"] {
+  --color-bg: #000800;
+  --color-bg-card: #001200;
+  --color-bg-hover: #002200;
+  --color-text: #00ff00;
+  --color-text-muted: #008f00;
+  --color-primary: #00ff00;
+  --color-secondary: #00cc00;
+  --color-tertiary: #33ff33;
+  --color-accent: #00ff00;
+  --color-green: #00ff00;
+  --color-tag-bg: rgba(0, 255, 0, 0.08);
+  --color-tag-text: #00ff00;
+  --color-border: rgba(0, 255, 0, 0.1);
+  --color-header-bg: rgba(0, 8, 0, 0.95);
+  --font-body: 'Courier New', monospace;
+  --font-display: 'Courier New', monospace;
+}
+
+/* Sunset: warm oranges to purples */
+[data-theme="sunset"] {
+  --color-bg: #1a0a2e;
+  --color-bg-card: #251244;
+  --color-bg-hover: #301a55;
+  --color-text: #ffe6cc;
+  --color-text-muted: #cc9e77;
+  --color-primary: #ff6b35;
+  --color-secondary: #ff9f1c;
+  --color-tertiary: #e84393;
+  --color-accent: #ff9f1c;
+  --color-green: #ffc857;
+  --color-tag-bg: rgba(255, 107, 53, 0.15);
+  --color-tag-text: #ff9f1c;
+  --color-border: rgba(255, 107, 53, 0.15);
+  --color-header-bg: rgba(26, 10, 46, 0.9);
+}
+
+/* Ocean: deep sea blues */
+[data-theme="ocean"] {
+  --color-bg: #0a1628;
+  --color-bg-card: #0f2035;
+  --color-bg-hover: #142a44;
+  --color-text: #d4eaf7;
+  --color-text-muted: #7ba7c9;
+  --color-primary: #00b4d8;
+  --color-secondary: #0096c7;
+  --color-tertiary: #48cae4;
+  --color-accent: #48cae4;
+  --color-green: #56e8b0;
+  --color-tag-bg: rgba(0, 180, 216, 0.12);
+  --color-tag-text: #48cae4;
+  --color-border: rgba(0, 180, 216, 0.12);
+  --color-header-bg: rgba(10, 22, 40, 0.9);
+}
+
+/* Forest: earthy greens and browns */
+[data-theme="forest"] {
+  --color-bg: #1a2416;
+  --color-bg-card: #243020;
+  --color-bg-hover: #2e3c28;
+  --color-text: #d4e6c3;
+  --color-text-muted: #8aaa72;
+  --color-primary: #82b74b;
+  --color-secondary: #c4a35a;
+  --color-tertiary: #6b8f3c;
+  --color-accent: #a8cc60;
+  --color-green: #82b74b;
+  --color-tag-bg: rgba(130, 183, 75, 0.12);
+  --color-tag-text: #a8cc60;
+  --color-border: rgba(130, 183, 75, 0.12);
+  --color-header-bg: rgba(26, 36, 22, 0.9);
+}
+
+/* Candy: bubbly pinks and purples */
+[data-theme="candy"] {
+  --color-bg: #ff69b4;
+  --color-bg-card: #ff91cb;
+  --color-bg-hover: #ffb6dd;
+  --color-text: #ffffff;
+  --color-text-muted: #fce4f0;
+  --color-primary: #ffff00;
+  --color-secondary: #00ffcc;
+  --color-tertiary: #ff00aa;
+  --color-accent: #7b2fff;
+  --color-green: #00ffcc;
+  --color-tag-bg: rgba(255, 255, 0, 0.3);
+  --color-tag-text: #ffffff;
+  --color-border: rgba(255, 255, 255, 0.4);
+  --color-header-bg: rgba(255, 0, 170, 0.85);
+}
+
+/* Synthwave: retro 80s purple/pink */
+[data-theme="synthwave"] {
+  --color-bg: #1a1033;
+  --color-bg-card: #241546;
+  --color-bg-hover: #2e1a5a;
+  --color-text: #e8d5ff;
+  --color-text-muted: #a87fd4;
+  --color-primary: #ff71ce;
+  --color-secondary: #01cdfe;
+  --color-tertiary: #b967ff;
+  --color-accent: #01cdfe;
+  --color-green: #05ffa1;
+  --color-tag-bg: rgba(185, 103, 255, 0.15);
+  --color-tag-text: #b967ff;
+  --color-border: rgba(255, 113, 206, 0.15);
+  --color-header-bg: rgba(26, 16, 51, 0.9);
+}
+
+/* Newspaper: print-style, serif, high contrast */
+[data-theme="newspaper"] {
+  --color-bg: #f2efe6;
+  --color-bg-card: #fffdf7;
+  --color-bg-hover: #eae6db;
+  --color-text: #1a1a1a;
+  --color-text-muted: #555555;
+  --color-primary: #b91c1c;
+  --color-secondary: #1a1a1a;
+  --color-tertiary: #8b0000;
+  --color-accent: #b91c1c;
+  --color-green: #1a6b1a;
+  --color-tag-bg: rgba(0, 0, 0, 0.06);
+  --color-tag-text: #1a1a1a;
+  --color-border: rgba(0, 0, 0, 0.15);
+  --color-header-bg: rgba(242, 239, 230, 0.95);
+  --font-body: Georgia, 'Times New Roman', serif;
+  --font-display: Georgia, 'Times New Roman', serif;
+}
+
+/* Retro: amber CRT monitor */
+[data-theme="retro"] {
+  --color-bg: #1a1200;
+  --color-bg-card: #2a1f00;
+  --color-bg-hover: #3a2c00;
+  --color-text: #ffb000;
+  --color-text-muted: #b87a00;
+  --color-primary: #ffb000;
+  --color-secondary: #ff8c00;
+  --color-tertiary: #ffd000;
+  --color-accent: #ffb000;
+  --color-green: #ffd000;
+  --color-tag-bg: rgba(255, 176, 0, 0.1);
+  --color-tag-text: #ffb000;
+  --color-border: rgba(255, 176, 0, 0.12);
+  --color-header-bg: rgba(26, 18, 0, 0.95);
+  --font-body: 'Courier New', monospace;
+  --font-display: 'Courier New', monospace;
+}
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;

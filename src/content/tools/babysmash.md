@@ -9,6 +9,7 @@ tags: ["game", "kids", "fun", "desktop"]
 language: "C#"
 license: "MIT"
 date_added: "2026-02-09"
+theme: "candy"
 ai_summary: "Let your tiny tots turn your keyboard into a colorful, giggly playground where every keypress bursts into shapes, letters, and cheerful sounds that teach while they play!"
 ai_features: ["🎨 Colorful shapes with happy faces", "🔤 Letters and numbers with text-to-speech", "🔊 Fun sounds and giggles", "🔒 Locks out system keys to prevent accidental exits"]
 ---

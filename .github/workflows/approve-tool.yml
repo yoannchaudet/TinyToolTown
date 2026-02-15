@@ -42,6 +42,7 @@ jobs:
             const tagsRaw = getField('Tags \\(comma-separated\\)');
             const language = getField('Primary Programming Language');
             const license = getField('License');
+            const theme = getField('Page Theme \\(optional\\)');
 
             // Validate required fields
             if (!name || !tagline || !github_url || !author || !author_github) {
@@ -178,6 +179,9 @@ jobs:
             }
             if (license && license !== '_No response_') {
               lines.push(`license: "${sanitize(license).replace(/"/g, '')}"`);
+            }
+            if (theme && theme !== '_No response_' && theme !== 'None (site default)') {
+              lines.push(`theme: "${sanitize(theme).replace(/"/g, '')}"`);
             }
             lines.push(`date_added: "${today}"`);
             lines.push('featured: false');

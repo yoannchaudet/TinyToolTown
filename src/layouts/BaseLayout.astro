@@ -3,12 +3,14 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  theme?: string;
 }
 
 const {
   title = "Tiny Tool Town 🏘️",
   description = "A delightful showcase for free, fun & open source tiny tools. Stupid-delightful software made with love.",
-  ogImage = "/og-image.png"
+  ogImage = "/og-image.png",
+  theme
 } = Astro.props;
 ---
 
@@ -51,10 +53,10 @@ const {
   <!-- RSS Feed -->
   <link rel="alternate" type="application/rss+xml" title="Tiny Tool Town" href="/rss.xml" />
 
-  <!-- Prevent theme flash: apply saved theme before paint -->
-  <script is:inline>
+  <!-- Prevent theme flash: apply saved/tool theme before paint -->
+  <script is:inline define:vars={{ theme }}>
     (function() {
-      var t = localStorage.getItem('ttt-theme');
+      var t = theme || localStorage.getItem('ttt-theme');
       if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       if (t !== 'dark') document.documentElement.setAttribute('data-theme', t);
     })();

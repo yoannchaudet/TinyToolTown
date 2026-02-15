@@ -133,8 +133,15 @@ const currentPath = Astro.url.pathname;
     }
   }
 
-  // Init on load
-  setTheme(getTheme());
+  // Init on load — but don't override a tool-specific theme set by the page
+  const toolTheme = document.documentElement.getAttribute('data-theme');
+  if (!toolTheme || themes.includes(toolTheme)) {
+    setTheme(getTheme());
+  } else {
+    // Tool has a custom theme — just update the toggle icon
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.textContent = icons[themes[0]];
+  }
 
   document.getElementById('theme-toggle')?.addEventListener('click', () => {
     const current = getTheme();
